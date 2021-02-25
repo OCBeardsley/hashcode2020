@@ -69,14 +69,19 @@ class Intersection:
 
   def generateLightCycle(self, simTime):
     totalVisits = 0
+    totalLength = 0
     for exit in self.exits:
       totalVisits += exit.getVisits()
+      totalLength += int(exit.L)
+
+    averageLength = len(self.exits)/totalLength
 
     for exit in self.exits:
       if exit.getVisits() == 0:
         priority = 0
       else:
         priority = math.ceil((totalVisits/exit.getVisits()))
+        priority = (priority * averageLength)/ int(exit.L)
         exit.priority = priority
       self.lightCycle.append([exit.get_name(), exit.priority])
       
@@ -193,29 +198,72 @@ class Map:
       for road in car.roadList:
         road.incrementVisits()
 
-  def getLightCycles(self):
-    print(len(self.intersections))
+  def getLightCycles(self, file):
+    intersections = 0
+    intersectionOutputs = []
+    #file.write(str(len(self.intersections)) + '\n')
     for intersection in self.intersections:
       intersection.generateLightCycle(self.data[0])
       lightcycle = intersection.getLightCycle()
-      #print(intersection.priorityList)
-      print(intersection.id)
       cycletime = 0
+
+      aboveZero = 0
+      aboveZeros = []
+      
       for light in lightcycle:
         if light[1] != 0:
           cycletime += light[1]
-      print(int(cycletime))
-      for light in lightcycle:
-        print(f'{light[0]} {int(light[1])}')
+          aboveZeros.append(f'{light[0]} {str(int(light[1]))}')
+          aboveZero += 1
+      
+      if aboveZero > 0:
+        intersections += 1
+        intersectionOutputs.append([f'{intersection.id}\n{aboveZero}', aboveZeros])
+    file.write(str(intersections) + '\n')
+    for output in intersectionOutputs:
+      file.write((output[0]))
+      for op in output[1]:
+        file.write('\n'+ op)
+      file.write('\n')
 
       
 
 
-
-f = open("b.txt", "r")
+f = open("a.txt", "r")
+output = open("outputa.txt","w+")
 myMap = Map(f)
 myMap.getPriority()
-myMap.getLightCycles()
+myMap.getLightCycles(output)
+
+f = open("b.txt", "r")
+output = open("outputb.txt","w+")
+myMap = Map(f)
+myMap.getPriority()
+myMap.getLightCycles(output)
+
+f = open("c.txt", "r")
+output = open("outputc.txt","w+")
+myMap = Map(f)
+myMap.getPriority()
+myMap.getLightCycles(output)
+
+f = open("d.txt", "r")
+output = open("outputd.txt","w+")
+myMap = Map(f)
+myMap.getPriority()
+myMap.getLightCycles(output)
+
+f = open("e.txt", "r")
+output = open("outpute.txt","w+")
+myMap = Map(f)
+myMap.getPriority()
+myMap.getLightCycles(output)
+
+f = open("f.txt", "r")
+output = open("outputf.txt","w+")
+myMap = Map(f)
+myMap.getPriority()
+myMap.getLightCycles(output)
 
 def create_output():
   print()
