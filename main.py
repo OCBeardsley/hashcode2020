@@ -74,21 +74,20 @@ class Intersection:
       totalVisits += exit.getVisits()
       totalLength += int(exit.L)
 
-    averageLength = len(self.exits)/totalLength
+    averageLength = totalLength/len(self.exits)
 
     for exit in self.exits:
       if exit.getVisits() == 0:
         priority = 0
       else:
-        priority = math.ceil((totalVisits/exit.getVisits()))
-        priority = (priority * averageLength)/ int(exit.L)
+        priority = math.ceil((totalVisits/exit.getVisits()) * ((averageLength/int(exit.L))))
         exit.priority = priority
       self.lightCycle.append([exit.get_name(), exit.priority])
       
     priorityList = []
     
     for exit in self.exits:
-      priorityList.append(exit.visits)
+      priorityList.append(exit.priority)
       
     def find_gcd(list):
       return reduce(math.gcd, list)
@@ -265,5 +264,5 @@ myMap = Map(f)
 myMap.getPriority()
 myMap.getLightCycles(output)
 
-def create_output():
-  print()
+# def create_output():
+#   print()
