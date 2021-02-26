@@ -91,7 +91,7 @@ class Intersection:
       else:
         priority = math.ceil((totalVisits/exit.getVisits())) # * ((averageLength/int(exit.L))))
         exit.priority = priority
-      self.lightCycle.append([exit.get_name(), exit.priority])
+        self.lightCycle.append([exit.get_name(), exit.priority])
       
     priorityList = []
     
