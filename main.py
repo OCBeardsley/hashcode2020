@@ -11,6 +11,8 @@ class Road:
     self.carsDriving = []
     self.carsWaiting = []
 
+    self.numCarsWaiting = 0
+
     self.visits = 0
     self.priority = 0
 
@@ -37,6 +39,10 @@ class Road:
   
   def addDriving(self, car):
     self.carsDriving.append(car)
+
+  def addWaiting(self, car):
+    self.carsWaiting.append(car)
+    self.numCarsWaiting += 1
   
   def incrementVisits(self):
     self.visits += 1
@@ -61,6 +67,9 @@ class Intersection:
     self.greenExit = None
     self.lightCycle = [] # In the format [[time in cycle, entrance0]...[time, entrance n-1]]?
 
+  def sortExits(self):
+    self.exits.sort(key=lambda x: x.numCarsWaiting, reverse=True)
+
   def addEntrance(self, road):
     self.entrances.append(road)
 
@@ -80,7 +89,7 @@ class Intersection:
       if exit.getVisits() == 0:
         priority = 0
       else:
-        priority = math.ceil((totalVisits/exit.getVisits()) * ((averageLength/int(exit.L))))
+        priority = math.ceil((totalVisits/exit.getVisits())) # * ((averageLength/int(exit.L))))
         exit.priority = priority
       self.lightCycle.append([exit.get_name(), exit.priority])
       
@@ -166,10 +175,13 @@ class Map:
       roads = []
       for i in range(1, int(carData[0])):
         roads.append(self.roads[carData[i]])
-      car = Car(carData[0], roads)
-      roads[i-1].addDriving(car)
-      self.cars.append(car)
+      self.cars.append(Car(carData[0], roads))
+      roads[0].addWaiting(self.cars[lineNum])
   
+  def sortExits(self):
+    for intersection in self.intersections:
+      intersection.sortExits()
+
   def getIntersection(self, id):
     return self.intersections[int(id)]
   
@@ -225,12 +237,12 @@ class Map:
         file.write('\n'+ op)
       file.write('\n')
 
-      
 
 
 f = open("a.txt", "r")
 output = open("outputa.txt","w+")
 myMap = Map(f)
+myMap.sortExits()
 myMap.getPriority()
 myMap.getLightCycles(output)
 
